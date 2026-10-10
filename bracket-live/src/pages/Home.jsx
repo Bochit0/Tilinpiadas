@@ -30,7 +30,7 @@ export default function Home() {
         <ActionCard 
           title="Crear un torneo"
           description="Configura llaves, equipos y controla los resultados en tiempo real."
-          href="/admin"
+          href="/crear-torneo"
           accentColor="#9B4DFF" // Púrpura vibrante
           delay={0.2}
           icon={
