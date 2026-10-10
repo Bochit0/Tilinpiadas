@@ -9,10 +9,10 @@ export default function ActionCard({ title, description, href, icon, delay, acce
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, delay }}
       // Usamos el color dinámico para el brillo (sombra)
-      whileHover={{ scale: 1.05, boxShadow: `0px 0px 30px ${accentColor}66` }} 
-      className="flex-1 bg-[#211833]/80 backdrop-blur-sm border border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-all cursor-pointer"
+      whileHover={{ scale: 1.05, boxShadow: `0px 0px 30px ${accentColor}66` }}
+      className="flex-1 bg-[#211833]/80 backdrop-blur-sm border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition-all focus-within:ring-2 focus-within:ring-white/60"
     >
-      <Link to={href} className="w-full flex flex-col items-center">
+      <Link to={href} className="w-full h-full p-10 flex flex-col items-center justify-center rounded-2xl focus:outline-none">
         {/* Círculo del ícono */}
         <div 
           className="w-20 h-20 rounded-full flex items-center justify-center mb-6 transition-colors"

@@ -1,1 +1,125 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/*
+ * Tokens de diseño (Tailwind v4, configuración en CSS).
+ * Cada --color-* genera utilidades: bg-canvas, text-muted, border-line, etc.
+ * Ningún componente debe usar colores sueltos: todo sale de aquí.
+ *
+ * UNA sola identidad visual en todo el proyecto: la del inicio (/) — fondo violeta
+ * medianoche con estrellas, superficies #211833, acento púrpura #9B4DFF y cian #00F2FE.
+ * Dos grupos de tokens solo porque el escenario (/stream) y la consola (/admin) nombran
+ * distinto las mismas cosas; ambos derivan de esta paleta.
+ */
+@theme {
+  /* ── Base compartida (la del inicio) ────────────────────────── */
+  --color-canvas: #0b0914;           /* fondo (arriba del degradado) */
+  --color-canvas-end: #1a1025;       /* fondo (abajo del degradado) */
+  --color-brand: #9b4dff;            /* púrpura vibrante */
+  --color-cyan: #00f2fe;             /* cian eléctrico */
+
+  /* ── 1) Escenario (/stream) ─────────────────────────────────── */
+  --color-header: #1a1228;           /* barra superior y banner */
+  --color-surface: #211833;          /* tarjetas normales */
+  --color-surface-featured: #33244f; /* tarjeta de la final */
+  --color-line: #3a2d55;             /* bordes sutiles */
+  --color-score: #120c1f;            /* celdita del marcador */
+  --color-muted: #8e94a5;            /* texto secundario */
+  --color-accent: #9b4dff;           /* barra del ganador */
+  --color-live: #ef4444;             /* punto "en directo" */
+  --color-link: #9b4dff;             /* conectores */
+  --color-link-champion: #00f2fe;    /* conector del campeón */
+  --color-gold: #facc15;             /* trofeo */
+
+  /* ── 2) Consola del operador (/admin) ───────────────────────── */
+  --color-ink: #0b0914;              /* fondo principal */
+  --color-panel: #211833;            /* superficies / tarjetas */
+  --color-edge: #3a2d55;             /* bordes de 1px */
+  --color-field: #130e20;            /* fondo de inputs (más hundido que el panel) */
+  --color-hover: #2d2145;            /* hover de superficies */
+  --color-subtle: #8e94a5;           /* etiquetas y texto atenuado */
+  --color-primary: #9b4dff;          /* acento: CTAs y selección activa */
+  --color-primary-hover: #b074ff;
+  --color-success: #10b981;          /* victoria / copiado / partida activa */
+  --color-danger: #ef4444;           /* eliminado / acciones críticas */
+  --color-info: #00f2fe;             /* torneo en curso (cian eléctrico) */
+  --color-warn: #f59e0b;             /* advertencias (BYEs, nombres largos) */
+  --color-neutral: #7c7794;          /* estados inactivos / finalizado */
+
+  /* Inter va empaquetada (@fontsource): funciona sin internet en el evento. */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Resplandor del partido que se está disputando */
+  --animate-glow: glow 2.2s ease-in-out infinite;
+
+  @keyframes glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(155 77 255 / 0);
+    }
+    50% {
+      box-shadow: 0 0 22px 2px rgb(155 77 255 / 0.55);
+    }
+  }
+
+  /* Entrada suave de las pantallas (como el título del inicio) */
+  --animate-rise: rise 0.7s ease-out both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Derrota: sacudida breve ("ruptura") y luego desaturación + opacidad reducida */
+  --animate-defeat: defeat 0.7s ease-out both;
+
+  @keyframes defeat {
+    0% {
+      transform: translateX(0);
+      filter: grayscale(0);
+      opacity: 1;
+    }
+    15% {
+      transform: translateX(-5px);
+    }
+    30% {
+      transform: translateX(5px);
+    }
+    45% {
+      transform: translateX(-3px);
+    }
+    60% {
+      transform: translateX(2px);
+    }
+    100% {
+      transform: translateX(0);
+      filter: grayscale(1);
+      opacity: 0.6;
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background: linear-gradient(to bottom, var(--color-canvas), var(--color-canvas-end)) fixed;
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* /stream?bg=transparent → fondo transparente para chroma/alpha en OBS */
+  html[data-transparent] body {
+    background: transparent;
+  }
+}
