@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Starfield from '../components/ui/Starfield';
 
 const tournamentTypes = [
   { value: 'single', label: 'Eliminación directa', detail: 'Una derrota y termina el recorrido.' },
@@ -59,8 +60,7 @@ export default function CreateTournament() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-[#0B0914] via-[#110D1D] to-[#1A1025] px-4 py-10 font-sans text-white sm:px-6">
-      <div aria-hidden="true" className="pointer-events-none absolute -left-32 top-12 h-80 w-80 rounded-full bg-[#9B4DFF]/10 blur-3xl" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-[#00F2FE]/8 blur-3xl" />
+      <Starfield />
 
       <section className="relative z-10 w-full max-w-3xl">
         <header className="mb-8 text-center sm:mb-10">
