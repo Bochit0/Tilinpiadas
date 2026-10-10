@@ -3,6 +3,7 @@ import { useMatchEvents } from '../hooks/useMatchEvents'
 import Header from '../components/layout/Header'
 import StageBanner from '../components/layout/StageBanner'
 import Bracket from '../components/bracket/Bracket'
+import LeagueStage from '../components/bracket/LeagueStage'
 import ChampionBanner from '../components/bracket/ChampionBanner'
 import ScoreImpact from '../components/bracket/ScoreImpact'
 import { useScoreImpact } from '../hooks/useScoreImpact'
@@ -13,7 +14,7 @@ import { useScoreImpact } from '../hooks/useScoreImpact'
  */
 export default function BracketPage({ enableScoreImpact = false }) {
   const view = useTournament()
-  const { title, stage, isLive, rounds, champion, runnerUp, showChampion } = view
+  const { title, stage, format, isLive, rounds, standings, champion, runnerUp, showChampion } = view
   const impact = useScoreImpact(rounds, enableScoreImpact)
 
   useMatchEvents(view)
@@ -24,7 +25,9 @@ export default function BracketPage({ enableScoreImpact = false }) {
       <StageBanner>{stage}</StageBanner>
 
       {rounds.length > 0 ? (
-        <Bracket rounds={rounds} champion={champion} runnerUp={runnerUp} />
+        format === 'elimination'
+          ? <Bracket rounds={rounds} champion={champion} runnerUp={runnerUp} />
+          : <LeagueStage rounds={rounds} standings={standings} />
       ) : (
         <p className="m-auto px-6 text-center text-muted">
           Aún no hay equipos. Configura el torneo desde el panel de administración.
@@ -32,7 +35,7 @@ export default function BracketPage({ enableScoreImpact = false }) {
       )}
 
       <ScoreImpact event={impact} />
-      <ChampionBanner team={showChampion ? champion : null} runnerUp={runnerUp} />
+      <ChampionBanner team={format === 'elimination' && showChampion ? champion : null} runnerUp={runnerUp} />
     </main>
   )
 }

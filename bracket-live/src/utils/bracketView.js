@@ -1,5 +1,5 @@
 import { getWinner, getLoser } from './bracket'
-import { getRoundLabel } from './bracketGenerator'
+import { getFormat, getRoundLabel, getTeamStandings, TOURNAMENT_FORMATS } from './bracketGenerator'
 
 const PLACEHOLDER_TEAM = { name: 'Por definir', logo: '' }
 
@@ -12,6 +12,7 @@ const PLACEHOLDER_TEAM = { name: 'Por definir', logo: '' }
  * @param {{ tournament: {title:string, stage:string}, teams: Record<string, any>, matches: any[], showChampion?: boolean }} state
  */
 export function buildBracketView({ tournament, teams, matches, showChampion = true }) {
+  const format = matches[0]?.format ?? getFormat(tournament.stage)
   // Orden por ronda: así, cuando llegamos a un slot "from", ese partido ya está resuelto.
   const ordered = [...matches].sort((a, b) => a.round - b.round || a.index - b.index)
   const resolvedById = {}
@@ -65,18 +66,26 @@ export function buildBracketView({ tournament, teams, matches, showChampion = tr
 
   const rounds = Array.from({ length: totalRounds }, (_, round) => ({
     id: `round-${round}`,
-    label: getRoundLabel(round, totalRounds),
+    label: format === 'elimination' ? getRoundLabel(round, totalRounds) : `Jornada ${round + 1}`,
     matches: ordered.filter((m) => m.round === round).map((m) => resolvedById[m.id]),
   }))
 
   const finalMatch = rounds.at(-1)?.matches[0]
+  const standings = format === 'elimination'
+    ? []
+    : getTeamStandings(Object.keys(teams), ordered, true).map((standing) => ({
+        ...standing,
+        team: teams[standing.teamId],
+      }))
 
   return {
     title: tournament.title,
-    stage: tournament.stage,
+    stage: TOURNAMENT_FORMATS[format] ?? tournament.stage,
+    format,
     rounds,
-    champion: teams[finalMatch?.winnerId] ?? null,
-    runnerUp: teams[finalMatch?.loserId] ?? null,
+    standings,
+    champion: format === 'elimination' ? teams[finalMatch?.winnerId] ?? null : null,
+    runnerUp: format === 'elimination' ? teams[finalMatch?.loserId] ?? null : null,
     isLive: ordered.some((m) => resolvedById[m.id].isLive),
     showChampion,
   }

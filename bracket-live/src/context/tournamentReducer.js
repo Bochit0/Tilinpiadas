@@ -1,4 +1,10 @@
-import { createBracket, isValidEntrantCount } from '../utils/bracketGenerator'
+import {
+  createNextSwissRound,
+  createTournamentMatches,
+  getFormat,
+  getSwissRoundCount,
+  isValidEntrantCount,
+} from '../utils/bracketGenerator'
 
 export const ACTIONS = {
   SET_INFO: 'SET_INFO',                       // { field: 'title' | 'stage', value }
@@ -31,7 +37,7 @@ export function tournamentReducer(state, action) {
       return {
         ...state,
         teams: Object.fromEntries(action.teams.map((t) => [t.id, t])),
-        matches: createBracket(action.teams.map((t) => t.id)),
+        matches: createTournamentMatches(action.teams.map((t) => t.id), state.tournament.stage),
         showChampion: true,
       }
     }
@@ -54,12 +60,31 @@ export function tournamentReducer(state, action) {
         ),
       }))
 
-    case ACTIONS.SET_STATUS:
+    case ACTIONS.SET_STATUS: {
+      const updated = updateMatch(state, action.matchId, (m) => ({ ...m, status: action.status }))
+      const match = updated.matches.find((item) => item.id === action.matchId)
+      let matches = updated.matches
+
+      if (action.status === 'finished' && (match.format ?? getFormat(state.tournament.stage)) === 'swiss') {
+        const currentRound = matches.filter((item) => item.round === match.round)
+        const roundComplete = currentRound.every((item) => item.status === 'finished')
+        const nextRoundExists = matches.some((item) => item.round === match.round + 1)
+        if (
+          roundComplete &&
+          !nextRoundExists &&
+          match.round + 1 < getSwissRoundCount(Object.keys(state.teams).length)
+        ) {
+          matches = [...matches, ...createNextSwissRound(Object.keys(state.teams), matches, match.round + 1)]
+        }
+      }
+
       return {
-        ...updateMatch(state, action.matchId, (m) => ({ ...m, status: action.status })),
+        ...updated,
+        matches,
         // Al cerrar un partido se vuelve a permitir el banner de campeón.
         showChampion: action.status === 'finished' ? true : state.showChampion,
       }
+    }
 
     case ACTIONS.SET_CHAMPION_BANNER:
       return { ...state, showChampion: action.visible }
