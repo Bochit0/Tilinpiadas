@@ -3,17 +3,28 @@ import Home from './pages/Home'
 import AdminPage from './pages/AdminPage'
 import StreamPage from './pages/StreamPage'
 import Starfield from './components/ui/Starfield'
+import { getStreamBackground } from './components/backgrounds'
 import { ROUTES } from './utils/routes'
 
 /**
  * Fondo común de toda la app: el degradado violeta va en <body> (index.css) y las estrellas
  * del inicio se dibujan fijas detrás de /admin y /stream. El inicio trae las suyas.
  * Con /stream?bg=transparent no se pinta nada, para que OBS reciba el canal alfa limpio.
+ * En /stream, ?bg=<key> (ver components/backgrounds) cambia las estrellas por otro fondo.
  */
 function Backdrop() {
   const { pathname, search } = useLocation()
-  const transparent = new URLSearchParams(search).get('bg') === 'transparent'
-  if (pathname === ROUTES.home || transparent) return null
+  const bg = new URLSearchParams(search).get('bg')
+  if (pathname === ROUTES.home || bg === 'transparent') return null
+
+  if (pathname === ROUTES.stream) {
+    const background = getStreamBackground(bg)
+    if (background) {
+      const { Component } = background
+      return <Component />
+    }
+  }
+
   return <Starfield fixed />
 }
 

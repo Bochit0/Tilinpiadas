@@ -2,6 +2,7 @@ import Panel from '../ui/Panel'
 import CopyButton from '../ui/CopyButton'
 import { ExternalIcon } from '../ui/icons'
 import { ROUTES, absoluteUrl, withBase } from '../../utils/routes'
+import { STREAM_BACKGROUNDS } from '../backgrounds'
 
 const LINKS = [
   { id: 'stream', title: 'Vista de stream', hint: 'Pantalla completa o proyector', path: ROUTES.stream },
@@ -11,6 +12,12 @@ const LINKS = [
     hint: 'Fuente de navegador en OBS',
     path: ROUTES.streamTransparent,
   },
+  ...STREAM_BACKGROUNDS.map(({ key, label, hint }) => ({
+    id: key,
+    title: label,
+    hint,
+    path: `${ROUTES.stream}?bg=${key}`,
+  })),
 ]
 
 /** Enlaces listos para copiar con un clic: el botón confirma en verde que se copió. */
