@@ -22,7 +22,7 @@ export default function StreamPage() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <BracketPage />
+      <BracketPage enableScoreImpact />
     </MotionConfig>
   )
 }

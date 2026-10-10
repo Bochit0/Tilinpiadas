@@ -49,6 +49,7 @@ export function buildBracketView({ tournament, teams, matches, showChampion = tr
         const team = teams[slot.teamId] ?? PLACEHOLDER_TEAM
         return {
           slotKey,
+          teamId: slot.teamId,
           name: team.name,
           logo: team.logo,
           score: slot.score,

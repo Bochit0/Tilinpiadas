@@ -3,7 +3,7 @@ import { cx } from '../../utils/cx'
 import { MAX_NAME_LENGTH, normalizeName } from '../../utils/roster'
 import Button from '../ui/Button'
 import Badge from '../ui/Badge'
-import { ArrowDownIcon, ArrowUpIcon, GripIcon, TrashIcon } from '../ui/icons'
+import { ArrowDownIcon, ArrowUpIcon, GripIcon, TrashIcon, UploadIcon } from '../ui/icons'
 
 const ERRORS = {
   empty: 'El nombre no puede estar vacío.',
@@ -21,6 +21,7 @@ export default function RosterItem({
   hasBye,
   error,
   draggable,
+  onLogoChange,
   onRename,
   onMove,
   onRemove,
@@ -70,6 +71,32 @@ export default function RosterItem({
           className="min-w-0 flex-1 bg-transparent px-1 py-1 text-sm font-medium text-white placeholder:text-neutral focus:outline-none"
           placeholder="Nombre"
         />
+
+        {item.logo && (
+          <img src={item.logo} alt={`Logo de ${item.name}`} className="size-8 shrink-0 rounded bg-canvas p-0.5 object-contain" />
+        )}
+        <label
+          title={item.logo ? 'Cambiar logo' : 'Agregar logo'}
+          className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-md text-subtle transition hover:bg-hover hover:text-white focus-within:outline-2 focus-within:outline-primary"
+        >
+          <UploadIcon />
+          <input
+            type="file"
+            accept="image/*"
+            aria-label={`${item.logo ? 'Cambiar' : 'Agregar'} logo de ${item.name || 'participante'}`}
+            className="sr-only"
+            onChange={(event) => {
+              const file = event.target.files?.[0]
+              event.target.value = ''
+              if (file) onLogoChange(item.id, file)
+            }}
+          />
+        </label>
+        {item.logo && (
+          <Button size="icon" variant="ghost" className="size-7 hover:text-danger" aria-label={`Quitar logo de ${item.name || 'participante'}`} onClick={() => onLogoChange(item.id, null)}>
+            <TrashIcon />
+          </Button>
+        )}
 
         {item.name.length >= MAX_NAME_LENGTH - 4 && (
           <span className="text-[11px] text-warn tabular-nums" title="Los nombres largos se cortan en pantalla">

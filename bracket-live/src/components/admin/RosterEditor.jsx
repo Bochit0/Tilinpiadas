@@ -12,6 +12,7 @@ import { ACTIONS } from '../../context/tournamentReducer'
 import { MAX_TEAMS } from '../../utils/bracketGenerator'
 import { parseEntrants, parseEntrantsFile, shuffle } from '../../utils/entrants'
 import { MAX_NAME_LENGTH, analyzeRoster, normalizeName } from '../../utils/roster'
+import { fileToLogoDataUrl } from '../../utils/image'
 
 const SIZES = [2, 4, 8, 16]
 
@@ -28,7 +29,7 @@ const LEVELS = {
 }
 
 let lastId = 0
-const makeItem = (name) => ({ id: `p${++lastId}`, name })
+const makeItem = (name, logo = '') => ({ id: `p${++lastId}`, name, logo })
 
 /**
  * Alta de participantes con lista interactiva: se añaden uno a uno o pegando/importando
@@ -39,7 +40,7 @@ export default function RosterEditor({ onGenerated }) {
   const { state, dispatch } = useTournamentStore()
   const hasBracket = state.matches.length > 0
 
-  const [items, setItems] = useState(() => Object.values(state.teams).map((t) => makeItem(t.name)))
+  const [items, setItems] = useState(() => Object.values(state.teams).map((t) => makeItem(t.name, t.logo)))
   const [seeding, setSeeding] = useState('manual')
   const [draft, setDraft] = useState('')
   const [confirming, setConfirming] = useState(false)
@@ -68,6 +69,20 @@ export default function RosterEditor({ onGenerated }) {
     if (!normalizeName(draft)) return
     addNames([draft])
     setDraft('')
+  }
+
+  const changeLogo = async (id, file) => {
+    if (!file) {
+      touch((prev) => prev.map((item) => (item.id === id ? { ...item, logo: '' } : item)))
+      return
+    }
+
+    try {
+      const logo = await fileToLogoDataUrl(file)
+      touch((prev) => prev.map((item) => (item.id === id ? { ...item, logo } : item)))
+    } catch {
+      setNotice('No se pudo cargar el logo. Elige un archivo de imagen válido.')
+    }
   }
 
   const importFile = async (event) => {
@@ -103,7 +118,11 @@ export default function RosterEditor({ onGenerated }) {
 
     dispatch({
       type: ACTIONS.SET_TEAMS,
-      teams: ordered.map((item, i) => ({ id: `t${i + 1}`, name: item.name, logo: logoByName.get(item.name) ?? '' })),
+      teams: ordered.map((item, i) => ({
+        id: `t${i + 1}`,
+        name: item.name,
+        logo: item.logo || logoByName.get(item.name) || '',
+      })),
     })
     setItems(ordered) // la lista refleja el orden realmente usado
     setConfirming(false)
@@ -183,6 +202,7 @@ export default function RosterEditor({ onGenerated }) {
                 hasBye={index < byes}
                 error={analysis.itemErrors[item.id]}
                 draggable={manual}
+                onLogoChange={changeLogo}
                 onRename={(id, name) => touch((prev) => prev.map((it) => (it.id === id ? { ...it, name } : it)))}
                 onMove={move}
                 onRemove={(id) => touch((prev) => prev.filter((it) => it.id !== id))}

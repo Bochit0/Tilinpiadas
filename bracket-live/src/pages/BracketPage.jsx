@@ -4,14 +4,17 @@ import Header from '../components/layout/Header'
 import StageBanner from '../components/layout/StageBanner'
 import Bracket from '../components/bracket/Bracket'
 import ChampionBanner from '../components/bracket/ChampionBanner'
+import ScoreImpact from '../components/bracket/ScoreImpact'
+import { useScoreImpact } from '../hooks/useScoreImpact'
 
 /**
  * Vista pública del bracket (la que se proyecta o captura en OBS).
  * Solo pinta: no tiene ningún control de edición.
  */
-export default function BracketPage() {
+export default function BracketPage({ enableScoreImpact = false }) {
   const view = useTournament()
   const { title, stage, isLive, rounds, champion, runnerUp, showChampion } = view
+  const impact = useScoreImpact(rounds, enableScoreImpact)
 
   useMatchEvents(view)
 
@@ -28,6 +31,7 @@ export default function BracketPage() {
         </p>
       )}
 
+      <ScoreImpact event={impact} />
       <ChampionBanner team={showChampion ? champion : null} runnerUp={runnerUp} />
     </main>
   )
