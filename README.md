@@ -1,4 +1,4 @@
-# Bracket.live 🏆
+# Bracket.live 
 
 ¡Bienvenido al proyecto **Bracket.live**! Este es un sistema de generación y visualización de cuadros de torneos en tiempo real, diseñado especialmente para eventos presenciales y transmisiones en vivo (streaming) de manera gratuita, ágil y con animaciones dinámicas de victoria y derrota.
 
@@ -6,7 +6,7 @@ La aplicación está construida en **React + Vite** y es **100% de ejecución en
 
 ---
 
-## 🚀 Cómo ejecutar el proyecto en tu computadora
+##  Cómo ejecutar el proyecto en tu computadora
 
 Sigue estos sencillos pasos para poner en marcha el entorno de desarrollo local:
 
@@ -26,15 +26,15 @@ cd bracket-live
 *(Si te pasaron el proyecto en un archivo comprimido `.zip`, simplemente descomprímelo y abre la terminal en la carpeta descompresionada).*
 
 ### 3. Instalar las dependencias
-Instala todos los paquetes necesarios (incluyendo Framer Motion para animaciones y Canvas Confetti):
+Este proyecto usa **pnpm** como gestor de paquetes (si no lo tienes, instálalo con `npm install -g pnpm`). Instala todos los paquetes necesarios (incluyendo Framer Motion para animaciones y Canvas Confetti):
 ```bash
-npm install
+pnpm install
 ```
 
 ### 4. Iniciar el servidor de desarrollo
 Para correr la aplicación de forma local, ejecuta:
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Una vez que el comando termine, verás una interfaz en la terminal con una dirección local (por lo general, es **`http://localhost:5173`**). Abre esa URL en tu navegador.
@@ -51,7 +51,7 @@ Una vez que el comando termine, verás una interfaz en la terminal con una direc
 
 ---
 
-## 📂 Estructura del proyecto
+##  Estructura del proyecto
 
 * `/src/components`: Componentes del torneo, controles de la administración y overlays.
 * `/src/context`: El cerebro de datos que maneja las rondas, los marcadores y los estados.
